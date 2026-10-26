@@ -861,3 +861,28 @@ button.button { border: 0; cursor: pointer; }
 .podium__item--1 .podium__avatar.avatar-initial { font-size: clamp(30px, 2.8vw, 42px); }
 .honor__avatar.avatar-initial { font-size: 19px; --m-base: var(--accent-text); }
 .honor__item--1 .honor__avatar.avatar-initial, .honor__item--2 .honor__avatar.avatar-initial, .honor__item--3 .honor__avatar.avatar-initial { font-size: 24px; }
+
+/* Previews in "What a patron gets": the Discord member list and a patron poll */
+.discord-mock { margin: 14px 0 0; max-width: 380px; padding: 12px 10px 8px; background: #2b2d31; border: 1px solid #1e1f22; color: #dbdee1; font: 500 14px/1.2 "gg sans", var(--f-text); }
+.discord-mock__group { margin: 0 6px 6px; font: 700 11px/1.4 var(--f-text); letter-spacing: .04em; text-transform: uppercase; color: #f0c75e; }
+.discord-mock__group--plain { margin-top: 12px; color: #949ba4; }
+.discord-mock__list { margin: 0; padding: 0; list-style: none; }
+.discord-mock__member { display: flex; align-items: center; gap: 10px; padding: 5px 6px; border-radius: 4px; }
+.discord-mock__member:hover { background: #35373c; }
+.discord-mock__avatar { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 30px; height: 30px; border-radius: 50%; font: 700 13px/1 var(--f-text); color: #fff; }
+.discord-mock__name { color: #f0c75e; font-weight: 600; }
+.discord-mock__member--plain .discord-mock__name { color: #dbdee1; font-weight: 500; }
+.discord-mock .discord-mock__badge { width: 20px; color: #f0c75e; }
+.poll-mock { margin: 12px 0 0; max-width: 380px; padding: 14px 16px 16px; background: #17140f; border: 1px solid #5c4b2a; color: #e9dcbc; font: 500 13px/1.3 var(--f-text); }
+.poll-mock__label { margin: 0 0 4px; font: 700 10px/1.4 var(--f-text); letter-spacing: .16em; text-transform: uppercase; color: #f0c75e; }
+.poll-mock__question { margin: 0 0 12px; font: 800 18px/1.15 var(--f-text); font-stretch: 78%; color: #fff4dc; }
+.poll-mock__option + .poll-mock__option { margin-top: 10px; }
+.poll-mock__text { display: flex; justify-content: space-between; gap: 12px; }
+.poll-mock__text b { color: #a3957a; font-weight: 600; }
+.poll-mock__option--win .poll-mock__text { color: #f0c75e; }
+.poll-mock__bar { display: block; height: 6px; margin-top: 5px; background: rgba(255, 255, 255, .08); }
+.poll-mock__bar > span { display: block; height: 100%; width: var(--to); background: #6b5c3e; animation: poll-empty-fill 5s var(--ease) infinite; }
+.poll-mock__option--win .poll-mock__bar > span { background: #c99a2e; }
+.poll-mock__option:nth-child(4) .poll-mock__bar > span { animation-delay: .25s; }
+.poll-mock__option:nth-child(5) .poll-mock__bar > span { animation-delay: .5s; }
+@media (prefers-reduced-motion: reduce) { .poll-mock__bar > span { animation: none; } }
