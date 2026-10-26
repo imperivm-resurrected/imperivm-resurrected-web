@@ -19,7 +19,11 @@
       unavailable: 'Ahora mismo no se puede entrar. Prueba dentro de un rato.',
       vote: 'Votar', voted: 'Has votado «{option}». El resultado se verá cuando cierre, el {date}.', closes: 'Cierra el {date}.',
       closed: 'Votación cerrada. Resultado:', onlyPatrons: 'Solo pueden votar los patronos.', signInToVote: 'Entra con Steam para votar.',
-      votes: '{n} votos', oneVote: '1 voto', noVotes: 'Nadie votó.', voteError: 'No se ha podido votar. Prueba otra vez.', pick: 'Elige una opción.'
+      votes: '{n} votos', oneVote: '1 voto', noVotes: 'Nadie votó.', voteError: 'No se ha podido votar. Prueba otra vez.', pick: 'Elige una opción.',
+      emptyLabel: 'Sin votación abierta', emptyTitle: 'La próxima la decidís vosotros.',
+      emptyText: 'Cuando abramos una votación, la anunciaremos en Discord y aparecerá aquí. Votan los patronos con su cuenta de Steam, y la opción que gane es la siguiente función del mod.',
+      emptyExample: 'Así se verá', emptyOptions: ['Partidas clasificatorias', 'Nuevos mapas aleatorios', 'Más civilizaciones'],
+      emptyDonate: 'Hazte patrono', emptyDiscord: 'Te avisamos en Discord'
     },
     en: {
       signIn: 'Sign in with Steam', signOut: 'Sign out', intro: 'Sign in with your Steam account to change your name, your quote or whether your amount shows on the roll.',
@@ -30,7 +34,11 @@
       unavailable: 'Signing in is not available right now. Try again in a while.',
       vote: 'Vote', voted: 'You voted "{option}". The result will show when it closes, on {date}.', closes: 'Closes on {date}.',
       closed: 'Poll closed. Result:', onlyPatrons: 'Only patrons can vote.', signInToVote: 'Sign in with Steam to vote.',
-      votes: '{n} votes', oneVote: '1 vote', noVotes: 'Nobody voted.', voteError: 'Could not vote. Try again.', pick: 'Pick an option.'
+      votes: '{n} votes', oneVote: '1 vote', noVotes: 'Nobody voted.', voteError: 'Could not vote. Try again.', pick: 'Pick an option.',
+      emptyLabel: 'No poll open', emptyTitle: 'You decide the next one.',
+      emptyText: 'When we open a poll, we will announce it on Discord and it will show up here. Patrons vote with their Steam account, and the winning option is the next feature of the mod.',
+      emptyExample: 'What it will look like', emptyOptions: ['Ranked matches', 'New random maps', 'More civilizations'],
+      emptyDonate: 'Become a patron', emptyDiscord: 'Get notified on Discord'
     },
     it: {
       signIn: 'Entra con Steam', signOut: 'Esci', intro: 'Entra con il tuo account Steam per cambiare il tuo nome, la tua frase o se si vede il tuo importo nell\'albo.',
@@ -41,7 +49,11 @@
       unavailable: 'Al momento non si può entrare. Riprova tra un po\'.',
       vote: 'Vota', voted: 'Hai votato «{option}». Il risultato si vedrà alla chiusura, il {date}.', closes: 'Chiude il {date}.',
       closed: 'Votazione chiusa. Risultato:', onlyPatrons: 'Possono votare solo i patroni.', signInToVote: 'Entra con Steam per votare.',
-      votes: '{n} voti', oneVote: '1 voto', noVotes: 'Nessuno ha votato.', voteError: 'Impossibile votare. Riprova.', pick: 'Scegli un\'opzione.'
+      votes: '{n} voti', oneVote: '1 voto', noVotes: 'Nessuno ha votato.', voteError: 'Impossibile votare. Riprova.', pick: 'Scegli un\'opzione.',
+      emptyLabel: 'Nessuna votazione aperta', emptyTitle: 'La prossima la decidete voi.',
+      emptyText: 'Quando apriremo una votazione, la annunceremo su Discord e comparirà qui. Votano i patroni con il loro account Steam, e l\'opzione vincente è la prossima funzione della mod.',
+      emptyExample: 'Ecco come sarà', emptyOptions: ['Partite classificate', 'Nuove mappe casuali', 'Più civiltà'],
+      emptyDonate: 'Diventa patrono', emptyDiscord: 'Ti avvisiamo su Discord'
     }
   }[lang];
 
@@ -184,8 +196,61 @@
     call('GET', '/v1/polls/current').then(function (data) { renderPoll(data.poll); }, function () { pollSection.hidden = true; });
   }
 
+  // No poll open: a preview of what one looks like, so the section invites instead of looking empty.
+  function renderPollEmpty() {
+    pollSection.hidden = false;
+    pollBox.textContent = '';
+    var box = el('div', 'poll-empty');
+    var head = el('div', 'poll-empty__head');
+    var ns = 'http://www.w3.org/2000/svg';
+    var medal = document.createElementNS(ns, 'svg');
+    medal.setAttribute('class', 'medal medal--1');
+    medal.setAttribute('aria-hidden', 'true');
+    var use = document.createElementNS(ns, 'use');
+    use.setAttribute('href', '#laurel');
+    medal.appendChild(use);
+    head.appendChild(medal);
+    var titles = el('div');
+    titles.appendChild(el('p', 'guide-mini', T.emptyLabel));
+    titles.appendChild(el('h3', 'poll__question', T.emptyTitle));
+    head.appendChild(titles);
+    box.appendChild(head);
+    box.appendChild(el('p', 'poll-empty__text', T.emptyText));
+
+    var ghost = el('div', 'poll-empty__ghost');
+    ghost.setAttribute('aria-hidden', 'true');
+    ghost.appendChild(el('span', 'poll-empty__tag', T.emptyExample));
+    [58, 29, 13].forEach(function (pct, i) {
+      var row = el('div', 'poll-empty__row');
+      var top = el('span', 'poll__result-head');
+      top.appendChild(el('span', '', T.emptyOptions[i]));
+      top.appendChild(el('span', 'poll__count', pct + ' %'));
+      row.appendChild(top);
+      var bar = el('span', 'poll__bar');
+      var fillBar = el('span', 'poll__fill poll-empty__fill');
+      fillBar.style.setProperty('--to', pct + '%');
+      fillBar.style.animationDelay = (i * 0.25) + 's';
+      bar.appendChild(fillBar);
+      row.appendChild(bar);
+      ghost.appendChild(row);
+    });
+    box.appendChild(ghost);
+
+    var actions = el('div', 'poll-empty__actions');
+    var donate = el('a', 'button button--accent', T.emptyDonate);
+    donate.href = '#donate';
+    actions.appendChild(donate);
+    var discord = el('a', 'guide-link', T.emptyDiscord + ' ↗');
+    discord.href = 'https://discord.gg/6kCatX3Zbc';
+    discord.target = '_blank';
+    discord.rel = 'noopener';
+    actions.appendChild(discord);
+    box.appendChild(actions);
+    pollBox.appendChild(box);
+  }
+
   function renderPoll(poll) {
-    if (!poll) { pollSection.hidden = true; return; }
+    if (!poll) { renderPollEmpty(); return; }
     pollSection.hidden = false;
     pollBox.textContent = '';
     pollBox.appendChild(el('h3', 'poll__question', poll.question[lang] || poll.question.es));
