@@ -10,7 +10,6 @@
 
   // Shown only with ?demo, so the design can be judged before the first real donor exists.
   var STEAM_DEMO = 'https://steamcommunity.com/';
-  var STEAM_DEFAULT_AVATAR = 'fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb';
   var DEMO = [
     { name: 'Marcus Aurelius', amount: 250, lastMonth: '2026-10', note: 'Por todas las tardes de LAN de 2007. Que nunca se apague.', steam: STEAM_DEMO },
     { name: 'Lucía', amount: 180, lastMonth: '2026-10', note: 'Mi primer juego de PC, y ahora puedo jugarlo online con mi hermano.', steam: STEAM_DEMO },
@@ -241,9 +240,7 @@
     if (typeof entry === 'string') entry = { name: entry };
     if (!entry || !entry.name) return null;
     var steam = typeof entry.steam === 'string' && /^https:\/\/steamcommunity\.com\//.test(entry.steam) ? entry.steam : '';
-    // Steam's grey question mark, for accounts without a picture, looks worse than no avatar at all.
-    var avatar = typeof entry.avatar === 'string' && /^https:\/\/avatars\.[a-z.]*steamstatic\.com\//.test(entry.avatar) &&
-      entry.avatar.indexOf(STEAM_DEFAULT_AVATAR) < 0 ? entry.avatar : '';
+    var avatar = typeof entry.avatar === 'string' && /^https:\/\/avatars\.[a-z.]*steamstatic\.com\//.test(entry.avatar) ? entry.avatar : '';
     return { name: String(entry.name), amount: Number(entry.amount) || 0, showAmount: !entry.hideAmount, lastMonth: monthName(entry.lastMonth), note: entry.note ? String(entry.note) : '', steam: steam, avatar: avatar, place: Number(entry.place) || 0, order: i };
   }
 
@@ -257,6 +254,14 @@
     img.decoding = 'async';
     img.referrerPolicy = 'no-referrer';
     return img;
+  }
+
+  // Without a Steam avatar, the first letter of the name in the colour of the place, so the circle is never empty.
+  function avatarOrInitial(p, className, size) {
+    if (p.avatar) return avatarImg(p, className, size);
+    var initial = el('span', className + ' avatar-initial', (Array.from(p.name.trim())[0] || '?').toUpperCase());
+    initial.setAttribute('aria-hidden', 'true');
+    return initial;
   }
 
   function steamLink(p, className) {
@@ -273,9 +278,9 @@
   function podiumCard(p, place) {
     var li = el('li', 'podium__item podium__item--' + place);
     // The avatar sits inside the laurel, like a portrait crowned with it.
-    var crest = el('span', 'podium__crest' + (p.avatar ? ' podium__crest--avatar' : ''));
+    var crest = el('span', 'podium__crest');
     crest.appendChild(icon('laurel', 'medal medal--' + place));
-    if (p.avatar) crest.appendChild(avatarImg(p, 'podium__avatar', 96));
+    crest.appendChild(avatarOrInitial(p, 'podium__avatar', 96));
     li.appendChild(crest);
     li.appendChild(el('span', 'podium__place', roman(place)));
     var who = el('span', 'podium__who');
@@ -323,8 +328,7 @@
       pos.appendChild(el('span', 'honor__place', roman(place)));
       row.appendChild(pos);
       var who = el('span', 'honor__who');
-      // An empty slot without an avatar keeps every name in line.
-      who.appendChild(p.avatar ? avatarImg(p, 'honor__avatar', 40) : el('span', 'honor__avatar honor__avatar--none'));
+      who.appendChild(avatarOrInitial(p, 'honor__avatar', 40));
       who.appendChild(el('span', 'honor__name', p.name));
       if (p.steam) who.appendChild(steamLink(p, 'honor__steam'));
       row.appendChild(who);

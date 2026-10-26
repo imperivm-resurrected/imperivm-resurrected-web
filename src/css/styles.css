@@ -856,4 +856,8 @@ button.button { border: 0; cursor: pointer; }
   .honor__avatar { width: 32px; height: 32px; }
   .honor__who { gap: 8px; }
 }
-.honor__avatar--none { background: none; }
+.avatar-initial { display: inline-flex; align-items: center; justify-content: center; font: 400 1em/1 var(--f-headline); color: var(--m-base, var(--ink-soft)); background: color-mix(in srgb, var(--m-base, var(--gray-2)) 16%, var(--box)); user-select: none; }
+.podium__avatar.avatar-initial { font-size: clamp(26px, 2.6vw, 40px); }
+.podium__item--1 .podium__avatar.avatar-initial { font-size: clamp(32px, 3.2vw, 50px); }
+.honor__avatar.avatar-initial { font-size: 18px; --m-base: var(--accent-text); }
+.honor__item--1 .honor__avatar.avatar-initial, .honor__item--2 .honor__avatar.avatar-initial, .honor__item--3 .honor__avatar.avatar-initial { font-size: 24px; }
