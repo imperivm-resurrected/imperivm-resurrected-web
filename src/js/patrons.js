@@ -215,6 +215,24 @@
     return { name: String(entry.name), amount: Number(entry.amount) || 0, showAmount: !entry.hideAmount, since: entry.since, note: entry.note ? String(entry.note) : '', steam: steam, place: Number(entry.place) || 0, order: i };
   }
 
+  function podiumCard(p, place) {
+    var li = el('li', 'podium__item podium__item--' + place);
+    li.appendChild(icon('laurel', 'medal medal--' + place));
+    li.appendChild(el('span', 'podium__place', roman(place)));
+    li.appendChild(el('span', 'podium__name', p.name));
+    if (p.showAmount && p.amount > 0) li.appendChild(el('span', 'podium__amount', money(p.amount)));
+    if (p.since) li.appendChild(el('span', 'podium__since', t.since + ' ' + roman(p.since)));
+    if (p.note) li.appendChild(el('q', 'podium__quote', p.note));
+    if (p.steam) {
+      var a = el('a', 'guide-link podium__steam', t.steam + ' ↗');
+      a.href = p.steam;
+      a.target = '_blank';
+      a.rel = 'noopener nofollow';
+      li.appendChild(a);
+    }
+    return li;
+  }
+
   function renderHonor(source, failed) {
     var box = document.getElementById('honor-list');
     if (!box) return;
@@ -230,20 +248,29 @@
     people.sort(function (a, b) { return a.place && b.place ? a.place - b.place : b.amount - a.amount || a.order - b.order; });
 
     box.textContent = '';
-    people.forEach(function (p, i) {
-      var place = i + 1;
+    var podium = document.getElementById('honor-podium');
+    var offset = 0;
+    if (podium) {
+      podium.textContent = '';
+      people.slice(0, 3).forEach(function (p, i) { podium.appendChild(podiumCard(p, i + 1)); });
+      podium.hidden = false;
+      offset = Math.min(3, people.length);
+      box.setAttribute('start', String(offset + 1));
+    }
+    people.slice(offset).forEach(function (p, i) {
+      var place = i + 1 + offset;
       var li = el('li', 'honor__item' + (place <= 3 ? ' honor__item--' + place : place <= 10 ? ' honor__item--top' : ''));
       var hasDetail = p.note || p.steam;
       var row = el(hasDetail ? 'button' : 'div', 'honor__row');
       var pos = el('span', 'honor__pos');
       if (place <= 3) pos.appendChild(icon('laurel', 'medal medal--' + place));
       else if (place <= 10) pos.appendChild(icon('laurel', 'medal medal--top'));
-      pos.appendChild(el('span', 'honor__place', String(place)));
+      pos.appendChild(el('span', 'honor__place', roman(place)));
       row.appendChild(pos);
       row.appendChild(el('span', 'honor__name', p.name));
       var meta = el('span', 'honor__meta');
       if (p.showAmount && p.amount > 0) meta.appendChild(el('span', 'honor__amount', money(p.amount)));
-      if (p.since) meta.appendChild(el('span', 'honor__since', t.since + ' ' + p.since));
+      if (p.since) meta.appendChild(el('span', 'honor__since', t.since + ' ' + roman(p.since)));
       row.appendChild(meta);
       li.appendChild(row);
 
