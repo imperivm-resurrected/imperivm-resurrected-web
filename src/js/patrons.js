@@ -323,7 +323,8 @@
       pos.appendChild(el('span', 'honor__place', roman(place)));
       row.appendChild(pos);
       var who = el('span', 'honor__who');
-      if (p.avatar) who.appendChild(avatarImg(p, 'honor__avatar', 40));
+      // An empty slot without an avatar keeps every name in line.
+      who.appendChild(p.avatar ? avatarImg(p, 'honor__avatar', 40) : el('span', 'honor__avatar honor__avatar--none'));
       who.appendChild(el('span', 'honor__name', p.name));
       if (p.steam) who.appendChild(steamLink(p, 'honor__steam'));
       row.appendChild(who);

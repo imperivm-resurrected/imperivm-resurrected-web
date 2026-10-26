@@ -856,3 +856,4 @@ button.button { border: 0; cursor: pointer; }
   .honor__avatar { width: 32px; height: 32px; }
   .honor__who { gap: 8px; }
 }
+.honor__avatar--none { background: none; }
