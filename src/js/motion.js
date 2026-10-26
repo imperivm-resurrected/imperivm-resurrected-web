@@ -15,6 +15,7 @@
     { sel: '.credits__lead', kind: 'rise', children: true },
     { sel: '.toc > .row, .three > div, .faq__item, .guide-section', kind: 'rise', stagger: true },
     { sel: '.closing__text', kind: 'rise', children: true },
+    { sel: '.patrons-intro, .honor, .honor__legend, .goals', kind: 'rise' },
     { sel: '.doc > h1', kind: 'rise' }
   ];
 

@@ -6,7 +6,7 @@ const vm = require('vm');
 
 const SRC = path.resolve(__dirname, '..', 'src');
 const DOMAIN = 'https://www.imperivmresurrected.com';
-const PAGES = ['index', 'guide', 'sdk', 'credits'];
+const PAGES = ['index', 'guide', 'sdk', 'credits', 'supporters'];
 const TARGETS = ['en', 'it'];
 const ALL = ['es', 'en', 'it'];
 const LOCALE = { es: 'es_ES', en: 'en_US', it: 'it_IT' };
@@ -20,7 +20,7 @@ function loadDictionaries() {
   const box = { window: {} };
   vm.runInNewContext(read(path.join(SRC, 'js', 'dictionary.js')), box);
   const T = box.window.TRANSLATIONS;
-  for (const file of ['i18n-guide.js', 'i18n-sdk.js', 'i18n-credits.js']) {
+  for (const file of ['i18n-guide.js', 'i18n-sdk.js', 'i18n-credits.js', 'i18n-patrons.js']) {
     const extraBox = { window: {} };
     vm.runInNewContext(read(path.join(SRC, 'js', file)), extraBox);
     const extra = extraBox.window.EXTRA_TRANSLATIONS || {};
@@ -56,7 +56,7 @@ function translate(html, lang, T, missing) {
 function prefixRelativeUrls(html) {
   return html.replace(/\b(href|src)="([^"]*)"/g, (whole, attr, value) => {
     if (/^(?:[a-z][a-z0-9+.-]*:|\/\/|#|\/)/i.test(value)) return whole;
-    if (/^(?:index|guide|sdk|credits)\.html(?:#.*)?$/.test(value)) return whole;
+    if (/^(?:index|guide|sdk|credits|supporters)\.html(?:#.*)?$/.test(value)) return whole;
     return attr + '="../' + value + '"';
   });
 }

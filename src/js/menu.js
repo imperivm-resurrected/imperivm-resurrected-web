@@ -40,14 +40,6 @@
       if (links[i].getAttribute('aria-current')) a.setAttribute('aria-current', links[i].getAttribute('aria-current'));
       panel.appendChild(a);
     }
-    var support = document.querySelector('.footer__support');
-    if (support) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = support.textContent.trim();
-      b.addEventListener('click', function () { close(false); support.click(); });
-      panel.appendChild(b);
-    }
   }
 
   function open() {

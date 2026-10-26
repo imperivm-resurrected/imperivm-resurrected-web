@@ -8,7 +8,7 @@ const today = new Date().toISOString().slice(0, 10);
 const entries = [];
 const add = (loc, priority) => entries.push(`  <url><loc>${DOMAIN}${loc}</loc><lastmod>${today}</lastmod><priority>${priority}</priority></url>`);
 
-const sitePages = [['index.html', '', 1.0], ['guide.html', 'guide.html', 0.8], ['sdk.html', 'sdk.html', 0.8], ['credits.html', 'credits.html', 0.4]];
+const sitePages = [['index.html', '', 1.0], ['guide.html', 'guide.html', 0.8], ['sdk.html', 'sdk.html', 0.8], ['credits.html', 'credits.html', 0.4], ['supporters.html', 'supporters.html', 0.5]];
 for (const prefix of ['', 'en/', 'it/']) {
   for (const [file, loc, priority] of sitePages) {
     if (!fs.existsSync(path.join(SRC, prefix, file))) continue;
