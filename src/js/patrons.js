@@ -252,7 +252,10 @@
     if (p.lastMonth) li.appendChild(el('span', 'podium__since', p.lastMonth));
     if (p.note) li.appendChild(el('q', 'podium__quote', p.note));
     if (p.steam) {
-      var a = el('a', 'guide-link podium__steam', t.steam + ' ↗');
+      var a = el('a', 'steam-link podium__steam');
+      a.appendChild(icon('steam', 'steam-link__icon'));
+      a.setAttribute('aria-label', t.steam);
+      a.title = t.steam;
       a.href = p.steam;
       a.target = '_blank';
       a.rel = 'noopener nofollow';
@@ -314,7 +317,10 @@
         detail.hidden = true;
         if (p.note) detail.appendChild(el('q', 'honor__quote', p.note));
         if (p.steam) {
-          var a = el('a', 'guide-link honor__steam', t.steam + ' ↗');
+          var a = el('a', 'steam-link honor__steam');
+          a.appendChild(icon('steam', 'steam-link__icon'));
+          a.setAttribute('aria-label', t.steam);
+          a.title = t.steam;
           a.href = p.steam;
           a.target = '_blank';
           a.rel = 'noopener nofollow';

@@ -665,7 +665,6 @@ button.honor__row:hover .honor__name, button.honor__row[aria-expanded="true"] .h
 .honor__detail[hidden] { display: none; }
 .honor__detail { display: grid; justify-items: start; gap: 12px; padding: 0 50px clamp(18px, 2vw, 28px) calc(clamp(118px, 10.5vw, 172px) + 18px); }
 .honor__quote { max-width: 56ch; font: 500 clamp(17px, 1.6vw, 22px)/1.4 var(--f-text); color: var(--ink-soft); }
-.honor__steam { font-size: 15px; }
 .medal { width: clamp(34px, 2.8vw, 44px); height: auto; aspect-ratio: 4 / 3; flex: none; fill: currentColor; color: var(--accent-text); }
 .medal--1 { color: #c99a2e; fill: url(#shine-1); }
 .medal--2 { color: #9aa0a6; fill: url(#shine-2); }
@@ -788,7 +787,8 @@ button.honor__row:hover .honor__name, button.honor__row[aria-expanded="true"] .h
 .poll__fill { display: block; height: 100%; background: var(--mid); }
 .poll__result--winner .poll__fill { background: var(--accent); }
 
-.podium { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; gap: clamp(12px, 1.6vw, 24px); margin: 0 0 clamp(22px, 3vw, 44px); padding: 0; list-style: none; }
+/* The section is a grid with its own gap; pull the list up so it sits close under the podium. */
+.podium { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; gap: clamp(12px, 1.6vw, 24px); margin: 0 0 calc(24px - clamp(24px, 4vw, 64px)); padding: 0; list-style: none; }
 .podium[hidden] { display: none; }
 .podium__item { --m-base: #a5781a; --m-light: #f6d77a; position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: clamp(22px, 2.6vw, 40px) clamp(14px, 1.6vw, 24px) clamp(20px, 2.2vw, 32px); border-top: 3px solid var(--m-base); background: var(--box); text-align: center; overflow: hidden; }
 .podium__item::before { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 70% at 50% 0%, color-mix(in srgb, var(--m-base) 22%, transparent), transparent 70%); pointer-events: none; }
@@ -814,7 +814,6 @@ button.honor__row:hover .honor__name, button.honor__row[aria-expanded="true"] .h
 .podium__amount { font: 700 clamp(18px, 1.6vw, 24px)/1 var(--f-text); font-stretch: 80%; }
 .podium__since { font: 600 11px/1 var(--f-text); letter-spacing: .24em; text-transform: uppercase; color: var(--gray-2); }
 .podium__quote { max-width: 30ch; font-size: 14px; line-height: 1.45; color: var(--ink-soft); }
-.podium__steam { font-size: 13px; }
 @media (prefers-reduced-motion: reduce) { .podium__name { animation: none; background-position: 50% 0; } }
 @media (max-width: 700px) {
   .podium { grid-template-columns: minmax(0, 1fr); }
@@ -829,3 +828,8 @@ button.honor__row:hover .honor__name, button.honor__row[aria-expanded="true"] .h
 .goals__reached-item .medal { width: 34px; }
 .goals__reached-title { flex: 1; min-width: 0; font: 800 clamp(18px, 1.8vw, 24px)/1.1 var(--f-text); font-stretch: 70%; }
 .goals__reached-meta { font: 700 12px/1 var(--f-text); letter-spacing: .16em; text-transform: uppercase; color: var(--gray-2); white-space: nowrap; }
+
+/* Steam profile link on the honour roll */
+.steam-link { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; color: var(--ink-soft); transition: color .2s var(--ease), background-color .2s var(--ease); }
+.steam-link:hover, .steam-link:focus-visible { color: var(--accent-text); background: var(--hairline); }
+.steam-link__icon { width: 26px; height: 26px; fill: currentColor; }
