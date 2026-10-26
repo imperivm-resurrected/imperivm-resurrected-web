@@ -889,14 +889,21 @@ button.button { border: 0; cursor: pointer; }
 
 /* Four points: one row on wide screens, two rows below 1200px, one column on phones */
 .three--four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.three--four .lobby-mock, .three--four .discord-mock, .three--four .poll-mock { margin-left: auto; margin-right: auto; }
+.three--four .lobby-mock, .three--four .discord-mock, .three--four .poll-mock { margin: 14px auto 0; }
+@supports (grid-template-rows: subgrid) {
+  .three--four { grid-template-rows: repeat(4, auto); }
+  .three--four > div { display: grid; grid-row: span 4; grid-template-rows: subgrid; align-content: start; }
+  .three--four > div > * { align-self: start; }
+  .three--four > div > :is(.lobby-mock, .discord-mock, .poll-mock) { align-self: stretch; box-sizing: border-box; width: 100%; }
+}
 @media (max-width: 1200px) {
-  .three--four { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: clamp(28px, 3vw, 48px); }
+  .three--four { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(8, auto); row-gap: 0; }
   .three--four > div:nth-child(odd) { padding-left: 0; border-left: 0; }
   .three--four > div:nth-child(n + 3) { padding-top: clamp(28px, 3vw, 48px); border-top: 1px solid #8a8a8a; }
 }
 @media (max-width: 820px) {
-  .three--four { grid-template-columns: minmax(0, 1fr); row-gap: 22px; }
+  .three--four { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; row-gap: 22px; }
+  .three--four > div { display: block; }
   .three--four > div, .three--four > div:first-child { padding: 18px 0 0; border-left: 0; border-top: 1px solid #8a8a8a; }
 }
 .discord-mock__avatar svg { width: 60%; height: 60%; fill: #fff; }
