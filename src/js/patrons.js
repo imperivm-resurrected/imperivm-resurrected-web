@@ -240,27 +240,48 @@
     if (typeof entry === 'string') entry = { name: entry };
     if (!entry || !entry.name) return null;
     var steam = typeof entry.steam === 'string' && /^https:\/\/steamcommunity\.com\//.test(entry.steam) ? entry.steam : '';
-    return { name: String(entry.name), amount: Number(entry.amount) || 0, showAmount: !entry.hideAmount, lastMonth: monthName(entry.lastMonth), note: entry.note ? String(entry.note) : '', steam: steam, place: Number(entry.place) || 0, order: i };
+    var avatar = typeof entry.avatar === 'string' && /^https:\/\/avatars\.[a-z.]*steamstatic\.com\//.test(entry.avatar) ? entry.avatar : '';
+    return { name: String(entry.name), amount: Number(entry.amount) || 0, showAmount: !entry.hideAmount, lastMonth: monthName(entry.lastMonth), note: entry.note ? String(entry.note) : '', steam: steam, avatar: avatar, place: Number(entry.place) || 0, order: i };
+  }
+
+  function avatarImg(p, className, size) {
+    var img = el('img', className);
+    img.src = p.avatar;
+    img.alt = '';
+    img.width = size;
+    img.height = size;
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.referrerPolicy = 'no-referrer';
+    return img;
+  }
+
+  function steamLink(p, className) {
+    var a = el('a', 'steam-link ' + className);
+    a.appendChild(icon('steam', 'steam-link__icon'));
+    a.setAttribute('aria-label', t.steam + ': ' + p.name);
+    a.title = t.steam;
+    a.href = p.steam;
+    a.target = '_blank';
+    a.rel = 'noopener nofollow';
+    return a;
   }
 
   function podiumCard(p, place) {
     var li = el('li', 'podium__item podium__item--' + place);
-    li.appendChild(icon('laurel', 'medal medal--' + place));
+    // The avatar sits inside the laurel, like a portrait crowned with it.
+    var crest = el('span', 'podium__crest' + (p.avatar ? ' podium__crest--avatar' : ''));
+    crest.appendChild(icon('laurel', 'medal medal--' + place));
+    if (p.avatar) crest.appendChild(avatarImg(p, 'podium__avatar', 96));
+    li.appendChild(crest);
     li.appendChild(el('span', 'podium__place', roman(place)));
-    li.appendChild(el('span', 'podium__name', p.name));
+    var who = el('span', 'podium__who');
+    who.appendChild(el('span', 'podium__name', p.name));
+    if (p.steam) who.appendChild(steamLink(p, 'podium__steam'));
+    li.appendChild(who);
     if (p.showAmount && p.amount > 0) li.appendChild(el('span', 'podium__amount', money(p.amount)));
     if (p.lastMonth) li.appendChild(el('span', 'podium__since', p.lastMonth));
     if (p.note) li.appendChild(el('q', 'podium__quote', p.note));
-    if (p.steam) {
-      var a = el('a', 'steam-link podium__steam');
-      a.appendChild(icon('steam', 'steam-link__icon'));
-      a.setAttribute('aria-label', t.steam);
-      a.title = t.steam;
-      a.href = p.steam;
-      a.target = '_blank';
-      a.rel = 'noopener nofollow';
-      li.appendChild(a);
-    }
     return li;
   }
 
@@ -291,14 +312,18 @@
     people.slice(offset).forEach(function (p, i) {
       var place = i + 1 + offset;
       var li = el('li', 'honor__item' + (place <= 3 ? ' honor__item--' + place : place <= 10 ? ' honor__item--top' : ''));
-      var hasDetail = p.note || p.steam;
-      var row = el(hasDetail ? 'button' : 'div', 'honor__row');
+      var hasDetail = !!p.note;
+      var row = el('div', 'honor__row');
       var pos = el('span', 'honor__pos');
       if (place <= 3) pos.appendChild(icon('laurel', 'medal medal--' + place));
       else if (place <= 10) pos.appendChild(icon('laurel', 'medal medal--top'));
       pos.appendChild(el('span', 'honor__place', roman(place)));
       row.appendChild(pos);
-      row.appendChild(el('span', 'honor__name', p.name));
+      var who = el('span', 'honor__who');
+      if (p.avatar) who.appendChild(avatarImg(p, 'honor__avatar', 40));
+      who.appendChild(el('span', 'honor__name', p.name));
+      if (p.steam) who.appendChild(steamLink(p, 'honor__steam'));
+      row.appendChild(who);
       var meta = el('span', 'honor__meta');
       if (p.showAmount && p.amount > 0) meta.appendChild(el('span', 'honor__amount', money(p.amount)));
       if (p.lastMonth) meta.appendChild(el('span', 'honor__since', p.lastMonth));
@@ -307,29 +332,25 @@
 
       if (hasDetail) {
         var id = 'honor-' + place;
-        row.type = 'button';
-        row.setAttribute('aria-expanded', 'false');
-        row.setAttribute('aria-controls', id);
-        row.setAttribute('title', t.more);
-        row.appendChild(el('span', 'honor__toggle'));
+        // The Steam link lives in the row, so the row cannot be a button: the + is, and a click anywhere else on the row works too.
+        var toggle = el('button', 'honor__toggle');
+        toggle.type = 'button';
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-controls', id);
+        toggle.setAttribute('aria-label', t.more);
+        toggle.title = t.more;
+        row.appendChild(toggle);
+        row.classList.add('honor__row--more');
         var detail = el('div', 'honor__detail');
         detail.id = id;
         detail.hidden = true;
-        if (p.note) detail.appendChild(el('q', 'honor__quote', p.note));
-        if (p.steam) {
-          var a = el('a', 'steam-link honor__steam');
-          a.appendChild(icon('steam', 'steam-link__icon'));
-          a.setAttribute('aria-label', t.steam);
-          a.title = t.steam;
-          a.href = p.steam;
-          a.target = '_blank';
-          a.rel = 'noopener nofollow';
-          detail.appendChild(a);
-        }
+        detail.appendChild(el('q', 'honor__quote', p.note));
         li.appendChild(detail);
-        row.addEventListener('click', function () {
-          var open = row.getAttribute('aria-expanded') === 'true';
-          row.setAttribute('aria-expanded', String(!open));
+        row.addEventListener('click', function (e) {
+          if (e.target.closest && e.target.closest('a')) return;
+          var open = toggle.getAttribute('aria-expanded') === 'true';
+          toggle.setAttribute('aria-expanded', String(!open));
+          row.classList.toggle('honor__row--open', !open);
           detail.hidden = open;
         });
       }

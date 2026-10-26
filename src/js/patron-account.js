@@ -2,21 +2,16 @@
   'use strict';
 
   var API = window.IMPERIVM_API;
-  var meBox = document.getElementById('me-body');
   var pollSection = document.getElementById('poll');
   var pollBox = document.getElementById('poll-body');
-  if (!API || !meBox) return;
+  if (!API || !pollBox) return;
 
   var LANG = { es: 'es-ES', en: 'en-GB', it: 'it-IT' };
   var lang = LANG[document.documentElement.lang] ? document.documentElement.lang : 'es';
   var T = {
     es: {
-      signIn: 'Entrar con Steam', signOut: 'Salir', intro: 'Entra con tu cuenta de Steam para cambiar tu nombre, tu frase o si se ve tu importe en la tabla.',
-      who: 'Has entrado como {who}.', notPatron: 'No encontramos donaciones con esta cuenta de Steam. Si has donado, escríbenos por Discord con tu perfil y la añadimos.',
-      place: 'Puesto {place} · {total} en total', notOnRoll: 'Ahora mismo no sales en la tabla.', name: 'Nombre en la tabla', quote: 'Tu frase (opcional)',
-      public: 'Salir en la tabla', showAmount: 'Mostrar mi importe', save: 'Guardar', saved: 'Guardado.', saveError: 'No se ha podido guardar. Prueba otra vez.',
+      signIn: 'Entrar con Steam',
       loginInvalid: 'No se ha podido entrar con Steam. Prueba otra vez.', loginCancelled: 'Has cancelado la entrada con Steam.', loginExpired: 'La entrada ha caducado. Prueba otra vez.',
-      unavailable: 'Ahora mismo no se puede entrar. Prueba dentro de un rato.',
       vote: 'Votar', voted: 'Has votado «{option}». El resultado se verá cuando cierre, el {date}.', closes: 'Cierra el {date}.',
       closed: 'Votación cerrada. Resultado:', onlyPatrons: 'Solo pueden votar los patronos.', signInToVote: 'Entra con Steam para votar.',
       votes: '{n} votos', oneVote: '1 voto', noVotes: 'Nadie votó.', voteError: 'No se ha podido votar. Prueba otra vez.', pick: 'Elige una opción.',
@@ -26,12 +21,8 @@
       emptyDonate: 'Hazte patrono', emptyDiscord: 'Te avisamos en Discord'
     },
     en: {
-      signIn: 'Sign in with Steam', signOut: 'Sign out', intro: 'Sign in with your Steam account to change your name, your quote or whether your amount shows on the roll.',
-      who: 'Signed in as {who}.', notPatron: 'We found no donations for this Steam account. If you donated, write to us on Discord with your profile and we will add it.',
-      place: 'Place {place} · {total} in total', notOnRoll: 'You are not on the roll right now.', name: 'Name on the roll', quote: 'Your quote (optional)',
-      public: 'Show me on the roll', showAmount: 'Show my amount', save: 'Save', saved: 'Saved.', saveError: 'Could not save. Try again.',
+      signIn: 'Sign in with Steam',
       loginInvalid: 'Could not sign in with Steam. Try again.', loginCancelled: 'You cancelled the Steam sign-in.', loginExpired: 'The sign-in expired. Try again.',
-      unavailable: 'Signing in is not available right now. Try again in a while.',
       vote: 'Vote', voted: 'You voted "{option}". The result will show when it closes, on {date}.', closes: 'Closes on {date}.',
       closed: 'Poll closed. Result:', onlyPatrons: 'Only patrons can vote.', signInToVote: 'Sign in with Steam to vote.',
       votes: '{n} votes', oneVote: '1 vote', noVotes: 'Nobody voted.', voteError: 'Could not vote. Try again.', pick: 'Pick an option.',
@@ -41,12 +32,8 @@
       emptyDonate: 'Become a patron', emptyDiscord: 'Get notified on Discord'
     },
     it: {
-      signIn: 'Entra con Steam', signOut: 'Esci', intro: 'Entra con il tuo account Steam per cambiare il tuo nome, la tua frase o se si vede il tuo importo nell\'albo.',
-      who: 'Sei entrato come {who}.', notPatron: 'Non troviamo donazioni con questo account Steam. Se hai donato, scrivici su Discord con il tuo profilo e lo aggiungiamo.',
-      place: 'Posto {place} · {total} in totale', notOnRoll: 'Al momento non compari nell\'albo.', name: 'Nome nell\'albo', quote: 'La tua frase (facoltativa)',
-      public: 'Comparire nell\'albo', showAmount: 'Mostrare il mio importo', save: 'Salva', saved: 'Salvato.', saveError: 'Impossibile salvare. Riprova.',
+      signIn: 'Entra con Steam',
       loginInvalid: 'Impossibile entrare con Steam. Riprova.', loginCancelled: 'Hai annullato l\'accesso con Steam.', loginExpired: 'L\'accesso è scaduto. Riprova.',
-      unavailable: 'Al momento non si può entrare. Riprova tra un po\'.',
       vote: 'Vota', voted: 'Hai votato «{option}». Il risultato si vedrà alla chiusura, il {date}.', closes: 'Chiude il {date}.',
       closed: 'Votazione chiusa. Risultato:', onlyPatrons: 'Possono votare solo i patroni.', signInToVote: 'Entra con Steam per votare.',
       votes: '{n} voti', oneVote: '1 voto', noVotes: 'Nessuno ha votato.', voteError: 'Impossibile votare. Riprova.', pick: 'Scegli un\'opzione.',
@@ -63,9 +50,6 @@
     if (className) e.className = className;
     if (text !== undefined) e.textContent = text;
     return e;
-  }
-  function money(n) {
-    try { return new Intl.NumberFormat(LANG[lang], { style: 'currency', currency: 'EUR', minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }).format(n); } catch (e) { return n + ' €'; }
   }
   function date(ms) { return new Date(ms).toLocaleString(LANG[lang], { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }); }
   function call(method, path, body) {
@@ -85,17 +69,13 @@
   }
   function signInUrl() {
     var back = withoutLogin();
-    back.hash = 'me';
+    back.hash = 'poll';
     return API + '/v1/auth/steam?return=' + encodeURIComponent(back.toString());
   }
   function signInButton() {
     var a = el('a', 'button button--accent', T.signIn);
     a.href = signInUrl();
     return a;
-  }
-  function done(box) {
-    Array.prototype.forEach.call(box.querySelectorAll('[data-skeleton]'), function (n) { n.parentNode.removeChild(n); });
-    box.removeAttribute('aria-busy');
   }
 
   // Steam sends the browser back with ?login=...; say how it went once and tidy the address.
@@ -108,87 +88,15 @@
   var signedIn = false;
   refresh();
 
+  // Signing in with Steam is only needed to vote; the patrons' own details are changed on request on Discord.
   function refresh() {
-    call('GET', '/v1/me').then(function (me) {
-      signedIn = !!me.signedIn;
-      renderMe(me);
-    }, function () {
-      done(meBox);
-      meBox.textContent = '';
-      meBox.appendChild(el('p', 'me__text', T.unavailable));
-    }).then(loadPoll);
+    call('GET', '/v1/me').then(function (me) { signedIn = !!me.signedIn; }, function () { signedIn = false; }).then(loadPoll);
   }
 
-  function renderMe(me) {
-    done(meBox);
-    meBox.textContent = '';
-    if (loginMessage) { meBox.appendChild(el('p', 'me__status me__status--error', loginMessage)); loginMessage = null; }
-    if (!me.signedIn) {
-      meBox.appendChild(el('p', 'me__text', T.intro));
-      meBox.appendChild(signInButton());
-      return;
-    }
-    var who = el('p', 'me__who');
-    if (me.avatar) {
-      var img = el('img', 'me__avatar');
-      img.src = me.avatar; img.alt = ''; img.width = 40; img.height = 40;
-      who.appendChild(img);
-    }
-    who.appendChild(el('span', '', fill(T.who, { who: me.persona || me.steamid })));
-    meBox.appendChild(who);
-
-    if (!me.patron) {
-      meBox.appendChild(el('p', 'me__text', T.notPatron));
-    } else {
-      var p = me.patron;
-      meBox.appendChild(el('p', 'me__place', p.place ? fill(T.place, { place: p.place, total: money(p.total) }) : T.notOnRoll));
-      var form = el('form', 'me__form');
-      var name = field(form, T.name, 'input', p.name, 60, true);
-      var quote = field(form, T.quote, 'input', p.quote || '', 160, false);
-      var pub = check(form, T.public, p.public);
-      var show = check(form, T.showAmount, p.showAmount);
-      var save = el('button', 'button button--accent', T.save);
-      save.type = 'submit';
-      var status = el('p', 'me__status');
-      status.setAttribute('role', 'status');
-      form.appendChild(save);
-      form.appendChild(status);
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        save.disabled = true;
-        call('PATCH', '/v1/me/patron', { name: name.value, quote: quote.value, public: pub.checked, showAmount: show.checked }).then(function () {
-          status.textContent = T.saved;
-          status.className = 'me__status';
-        }, function () {
-          status.textContent = T.saveError;
-          status.className = 'me__status me__status--error';
-        }).then(function () { save.disabled = false; });
-      });
-      meBox.appendChild(form);
-    }
-    var out = el('button', 'me__signout', T.signOut);
-    out.type = 'button';
-    out.addEventListener('click', function () { call('POST', '/v1/auth/logout').then(refresh, refresh); });
-    meBox.appendChild(out);
-  }
-
-  function field(form, label, tag, value, max, required) {
-    var l = el('label', 'me__field');
-    l.appendChild(el('span', '', label));
-    var input = el(tag);
-    input.value = value; input.maxLength = max; input.required = required;
-    l.appendChild(input);
-    form.appendChild(l);
-    return input;
-  }
-  function check(form, label, checked) {
-    var l = el('label', 'me__check');
-    var input = el('input');
-    input.type = 'checkbox'; input.checked = !!checked;
-    l.appendChild(input);
-    l.appendChild(el('span', '', label));
-    form.appendChild(l);
-    return input;
+  function showLoginMessage() {
+    if (!loginMessage) return;
+    pollBox.appendChild(el('p', 'poll__status poll__status--error', loginMessage));
+    loginMessage = null;
   }
 
   function loadPoll() {
@@ -200,6 +108,7 @@
   function renderPollEmpty() {
     pollSection.hidden = false;
     pollBox.textContent = '';
+    showLoginMessage();
     var box = el('div', 'poll-empty');
     var head = el('div', 'poll-empty__head');
     var ns = 'http://www.w3.org/2000/svg';
@@ -253,6 +162,7 @@
     if (!poll) { renderPollEmpty(); return; }
     pollSection.hidden = false;
     pollBox.textContent = '';
+    showLoginMessage();
     pollBox.appendChild(el('h3', 'poll__question', poll.question[lang] || poll.question.es));
     var label = function (o) { return o.label[lang] || o.label.es; };
 
@@ -301,18 +211,18 @@
     if (poll.canVote) {
       var submit = el('button', 'button button--accent', T.vote);
       submit.type = 'submit';
-      var status = el('p', 'me__status');
+      var status = el('p', 'poll__status');
       status.setAttribute('role', 'status');
       form.appendChild(submit);
       form.appendChild(status);
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         var picked = form.querySelector('input:checked');
-        if (!picked) { status.textContent = T.pick; status.className = 'me__status me__status--error'; return; }
+        if (!picked) { status.textContent = T.pick; status.className = 'poll__status poll__status--error'; return; }
         submit.disabled = true;
         call('POST', '/v1/polls/' + poll.id + '/vote', { option: picked.value }).then(loadPoll, function () {
           status.textContent = T.voteError;
-          status.className = 'me__status me__status--error';
+          status.className = 'poll__status poll__status--error';
           submit.disabled = false;
         });
       });
