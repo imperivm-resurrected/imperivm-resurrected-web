@@ -60,7 +60,7 @@
   var lang = T[document.documentElement.lang] ? document.documentElement.lang : 'es';
   var LOCALE = { es: 'es-ES', en: 'en-GB', it: 'it-IT' };
   function money(n, currency) {
-    try { return new Intl.NumberFormat(LOCALE[lang], { style: 'currency', currency: currency || 'EUR', maximumFractionDigits: 0 }).format(n); }
+    try { return new Intl.NumberFormat(LOCALE[lang], { style: 'currency', currency: currency || 'EUR', minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }).format(n); }
     catch (e) { return n + ' ' + (currency || 'EUR'); }
   }
   function localized(v) { return v && typeof v === 'object' ? (v[lang] || v.es || '') : (v || ''); }

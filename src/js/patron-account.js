@@ -53,7 +53,7 @@
     return e;
   }
   function money(n) {
-    try { return new Intl.NumberFormat(LANG[lang], { style: 'currency', currency: 'EUR', maximumFractionDigits: 2, minimumFractionDigits: 0 }).format(n); } catch (e) { return n + ' €'; }
+    try { return new Intl.NumberFormat(LANG[lang], { style: 'currency', currency: 'EUR', minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }).format(n); } catch (e) { return n + ' €'; }
   }
   function date(ms) { return new Date(ms).toLocaleString(LANG[lang], { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }); }
   function call(method, path, body) {
