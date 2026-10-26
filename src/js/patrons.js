@@ -10,6 +10,7 @@
 
   // Shown only with ?demo, so the design can be judged before the first real donor exists.
   var STEAM_DEMO = 'https://steamcommunity.com/';
+  var STEAM_DEFAULT_AVATAR = 'fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb';
   var DEMO = [
     { name: 'Marcus Aurelius', amount: 250, lastMonth: '2026-10', note: 'Por todas las tardes de LAN de 2007. Que nunca se apague.', steam: STEAM_DEMO },
     { name: 'Lucía', amount: 180, lastMonth: '2026-10', note: 'Mi primer juego de PC, y ahora puedo jugarlo online con mi hermano.', steam: STEAM_DEMO },
@@ -240,7 +241,9 @@
     if (typeof entry === 'string') entry = { name: entry };
     if (!entry || !entry.name) return null;
     var steam = typeof entry.steam === 'string' && /^https:\/\/steamcommunity\.com\//.test(entry.steam) ? entry.steam : '';
-    var avatar = typeof entry.avatar === 'string' && /^https:\/\/avatars\.[a-z.]*steamstatic\.com\//.test(entry.avatar) ? entry.avatar : '';
+    // Steam's grey question mark, for accounts without a picture, looks worse than no avatar at all.
+    var avatar = typeof entry.avatar === 'string' && /^https:\/\/avatars\.[a-z.]*steamstatic\.com\//.test(entry.avatar) &&
+      entry.avatar.indexOf(STEAM_DEFAULT_AVATAR) < 0 ? entry.avatar : '';
     return { name: String(entry.name), amount: Number(entry.amount) || 0, showAmount: !entry.hideAmount, lastMonth: monthName(entry.lastMonth), note: entry.note ? String(entry.note) : '', steam: steam, avatar: avatar, place: Number(entry.place) || 0, order: i };
   }
 
