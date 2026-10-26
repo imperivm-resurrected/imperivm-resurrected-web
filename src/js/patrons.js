@@ -2,31 +2,31 @@
   'use strict';
 
   var T = {
-    es: { paypal: 'PayPal', bizum: 'Bizum', btc: 'Bitcoin', open: 'Abrir', copy: 'Copiar', copied: 'Copiado', since: 'Desde', steam: 'Perfil de Steam', more: 'Ver su frase y su perfil' },
-    en: { paypal: 'PayPal', bizum: 'Bizum', btc: 'Bitcoin', open: 'Open', copy: 'Copy', copied: 'Copied', since: 'Since', steam: 'Steam profile', more: 'See their quote and profile' },
-    it: { paypal: 'PayPal', bizum: 'Bizum', btc: 'Bitcoin', open: 'Apri', copy: 'Copia', copied: 'Copiato', since: 'Dal', steam: 'Profilo Steam', more: 'Vedi la sua frase e il suo profilo' }
+    es: { paypal: 'PayPal', bizum: 'Bizum', btc: 'Bitcoin', open: 'Abrir', copy: 'Copiar', copied: 'Copiado', steam: 'Perfil de Steam', more: 'Ver su frase y su perfil' },
+    en: { paypal: 'PayPal', bizum: 'Bizum', btc: 'Bitcoin', open: 'Open', copy: 'Copy', copied: 'Copied', steam: 'Steam profile', more: 'See their quote and profile' },
+    it: { paypal: 'PayPal', bizum: 'Bizum', btc: 'Bitcoin', open: 'Apri', copy: 'Copia', copied: 'Copiato', steam: 'Profilo Steam', more: 'Vedi la sua frase e il suo profilo' }
   };
   var t = T[document.documentElement.lang] || T.es;
 
   // Shown only with ?demo, so the design can be judged before the first real donor exists.
   var STEAM_DEMO = 'https://steamcommunity.com/';
   var DEMO = [
-    { name: 'Marcus Aurelius', amount: 250, since: 2026, note: 'Por todas las tardes de LAN de 2007. Que nunca se apague.', steam: STEAM_DEMO },
-    { name: 'Lucía', amount: 180, since: 2026, note: 'Mi primer juego de PC, y ahora puedo jugarlo online con mi hermano.', steam: STEAM_DEMO },
-    { name: 'Il Console', amount: 150, since: 2026, note: 'Forza Roma, sempre.' },
-    { name: 'Sertorio', amount: 100, since: 2026, steam: STEAM_DEMO },
-    { name: 'Dacia Felix', amount: 80, since: 2026, note: 'Que no muera nunca este juego.' },
-    { name: 'Tito Pullo', amount: 60, since: 2026 },
-    { name: 'Numancia', amount: 50, since: 2026, steam: STEAM_DEMO },
-    { name: 'Brennus', amount: 50, since: 2026 },
-    { name: 'Galo Furioso', amount: 40, since: 2026, note: 'Por el online sin abrir puertos.' },
-    { name: 'Livia', amount: 30, since: 2026 },
-    { name: 'Vercingetorix', amount: 25, since: 2026 },
-    { name: 'Tarraco', amount: 20, since: 2026, steam: STEAM_DEMO },
-    { name: 'Spartacus_ES', amount: 15, since: 2026 },
-    { name: 'Cornelia', amount: 10, since: 2026 },
-    { name: 'Pakito', amount: 5, since: 2026, note: 'Poco, pero con cariño.' },
-    { name: 'Iulia', amount: 5, since: 2026 }
+    { name: 'Marcus Aurelius', amount: 250, lastMonth: '2026-10', note: 'Por todas las tardes de LAN de 2007. Que nunca se apague.', steam: STEAM_DEMO },
+    { name: 'Lucía', amount: 180, lastMonth: '2026-10', note: 'Mi primer juego de PC, y ahora puedo jugarlo online con mi hermano.', steam: STEAM_DEMO },
+    { name: 'Il Console', amount: 150, lastMonth: '2026-10', note: 'Forza Roma, sempre.' },
+    { name: 'Sertorio', amount: 100, lastMonth: '2026-10', steam: STEAM_DEMO },
+    { name: 'Dacia Felix', amount: 80, lastMonth: '2026-10', note: 'Que no muera nunca este juego.' },
+    { name: 'Tito Pullo', amount: 60, lastMonth: '2026-10' },
+    { name: 'Numancia', amount: 50, lastMonth: '2026-10', steam: STEAM_DEMO },
+    { name: 'Brennus', amount: 50, lastMonth: '2026-10' },
+    { name: 'Galo Furioso', amount: 40, lastMonth: '2026-10', note: 'Por el online sin abrir puertos.' },
+    { name: 'Livia', amount: 30, lastMonth: '2026-10' },
+    { name: 'Vercingetorix', amount: 25, lastMonth: '2026-10' },
+    { name: 'Tarraco', amount: 20, lastMonth: '2026-10', steam: STEAM_DEMO },
+    { name: 'Spartacus_ES', amount: 15, lastMonth: '2026-10' },
+    { name: 'Cornelia', amount: 10, lastMonth: '2026-10' },
+    { name: 'Pakito', amount: 5, lastMonth: '2026-10', note: 'Poco, pero con cariño.' },
+    { name: 'Iulia', amount: 5, lastMonth: '2026-10' }
   ];
 
   var demo = /[?&]demo\b/.test(location.search);
@@ -36,6 +36,14 @@
     var out = '';
     map.forEach(function (p) { while (n >= p[0]) { out += p[1]; n -= p[0]; } });
     return out;
+  }
+
+  // "2026-10" → "oct 2026", the month of the patron's latest donation.
+  function monthName(ym) {
+    var m = /^(\d{4})-(\d{2})$/.exec(ym || '');
+    if (!m) return '';
+    var d = new Date(Date.UTC(+m[1], +m[2] - 1, 1));
+    return d.toLocaleDateString(document.documentElement.lang || 'es', { month: 'short', year: 'numeric', timeZone: 'UTC' }).replace('.', '');
   }
 
   function el(tag, className, text) {
@@ -212,7 +220,7 @@
     if (typeof entry === 'string') entry = { name: entry };
     if (!entry || !entry.name) return null;
     var steam = typeof entry.steam === 'string' && /^https:\/\/steamcommunity\.com\//.test(entry.steam) ? entry.steam : '';
-    return { name: String(entry.name), amount: Number(entry.amount) || 0, showAmount: !entry.hideAmount, since: entry.since, note: entry.note ? String(entry.note) : '', steam: steam, place: Number(entry.place) || 0, order: i };
+    return { name: String(entry.name), amount: Number(entry.amount) || 0, showAmount: !entry.hideAmount, lastMonth: monthName(entry.lastMonth), note: entry.note ? String(entry.note) : '', steam: steam, place: Number(entry.place) || 0, order: i };
   }
 
   function podiumCard(p, place) {
@@ -221,7 +229,7 @@
     li.appendChild(el('span', 'podium__place', roman(place)));
     li.appendChild(el('span', 'podium__name', p.name));
     if (p.showAmount && p.amount > 0) li.appendChild(el('span', 'podium__amount', money(p.amount)));
-    if (p.since) li.appendChild(el('span', 'podium__since', t.since + ' ' + roman(p.since)));
+    if (p.lastMonth) li.appendChild(el('span', 'podium__since', p.lastMonth));
     if (p.note) li.appendChild(el('q', 'podium__quote', p.note));
     if (p.steam) {
       var a = el('a', 'guide-link podium__steam', t.steam + ' ↗');
@@ -270,7 +278,7 @@
       row.appendChild(el('span', 'honor__name', p.name));
       var meta = el('span', 'honor__meta');
       if (p.showAmount && p.amount > 0) meta.appendChild(el('span', 'honor__amount', money(p.amount)));
-      if (p.since) meta.appendChild(el('span', 'honor__since', t.since + ' ' + roman(p.since)));
+      if (p.lastMonth) meta.appendChild(el('span', 'honor__since', p.lastMonth));
       row.appendChild(meta);
       li.appendChild(row);
 
