@@ -74,15 +74,16 @@
   function localized(v) { return v && typeof v === 'object' ? (v[lang] || v.es || '') : (v || ''); }
 
   var GOAL_TEXT = {
-    es: { of: 'de', monthly: 'Cada mes', thisMonth: 'Este mes', perMonth: '/mes', done: 'Conseguido. Gracias.', doneMonth: 'Cubierto este mes. Gracias.' },
-    en: { of: 'of', monthly: 'Every month', thisMonth: 'This month', perMonth: '/month', done: 'Reached. Thank you.', doneMonth: 'Covered this month. Thank you.' },
-    it: { of: 'su', monthly: 'Ogni mese', thisMonth: 'Questo mese', perMonth: '/mese', done: 'Raggiunto. Grazie.', doneMonth: 'Coperto questo mese. Grazie.' }
+    es: { of: 'de', monthly: 'Cada mes', thisMonth: 'Este mes', perMonth: '/mes', done: 'Conseguido. Gracias.', doneMonth: 'Cubierto este mes. Gracias.', surplus: 'Sobran {x}: irán al siguiente objetivo en cuanto lo anunciemos.', reached: 'Ya conseguido' },
+    en: { of: 'of', monthly: 'Every month', thisMonth: 'This month', perMonth: '/month', done: 'Reached. Thank you.', doneMonth: 'Covered this month. Thank you.', surplus: '{x} left over: it goes to the next goal as soon as we announce it.', reached: 'Already reached' },
+    it: { of: 'su', monthly: 'Ogni mese', thisMonth: 'Questo mese', perMonth: '/mese', done: 'Raggiunto. Grazie.', doneMonth: 'Coperto questo mese. Grazie.', surplus: 'Avanzano {x}: andranno al prossimo obiettivo appena lo annunciamo.', reached: 'Già raggiunto' }
   }[lang];
   var DEMO_FILL = [1, .62, .27];
 
   renderDonate(window.SUPPORT_DATA);
   loadData(function (data) {
     renderGoals(data.goals);
+    renderGoalsAfter(data.completed, data.surplus);
     renderHonor(data.supporters, data.failed);
   });
 
@@ -99,7 +100,7 @@
   function loadData(done) {
     var wait = demo && /[?&]slow\b/.test(location.search) ? 1500 : 0;
     Promise.all([getJson('/v1/patrons'), getJson('/v1/goals')]).then(function (r) {
-      return { supporters: r[0].patrons, goals: r[1].goals };
+      return { supporters: r[0].patrons, goals: r[1].goals, completed: r[1].completed, surplus: r[1].surplus };
     }, function () {
       return { supporters: [], goals: [], failed: true };
     }).then(function (data) {
@@ -158,6 +159,25 @@
       row.appendChild(meter);
       listBox.appendChild(row);
     });
+  }
+
+  // Money waiting for the next goal, and the goals already reached, which keep what they got.
+  function renderGoalsAfter(completed, surplus) {
+    var box = document.getElementById('goals');
+    if (!box || box.hidden) return;
+    if (Number(surplus) > 0) box.appendChild(el('p', 'goals__surplus', GOAL_TEXT.surplus.replace('{x}', money(Number(surplus)))));
+    var done = (Array.isArray(completed) ? completed : []).filter(function (g) { return g && g.title; });
+    if (!done.length) return;
+    box.appendChild(el('p', 'guide-mini goals__reached-label', GOAL_TEXT.reached));
+    var list = el('ul', 'goals__reached');
+    done.forEach(function (g) {
+      var li = el('li', 'goals__reached-item');
+      li.appendChild(icon('laurel', 'medal medal--1'));
+      li.appendChild(el('span', 'goals__reached-title', localized(g.title).replace(/\.$/, '')));
+      li.appendChild(el('span', 'goals__reached-meta', money(Number(g.raised), g.currency) + ' · ' + monthName(g.completedMonth)));
+      list.appendChild(li);
+    });
+    box.appendChild(list);
   }
 
   function renderDonate(D) {

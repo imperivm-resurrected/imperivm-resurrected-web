@@ -820,3 +820,12 @@ button.honor__row:hover .honor__name, button.honor__row[aria-expanded="true"] .h
   .podium { grid-template-columns: minmax(0, 1fr); }
   .podium__item, .podium__item--1, .podium__item--2, .podium__item--3 { order: 0; }
 }
+
+/* Goals: surplus waiting for the next goal, and goals already reached */
+.goals__surplus { margin: 18px 0 0; max-width: 62ch; font-size: clamp(14px, 1.2vw, 16px); line-height: 1.55; color: var(--ink-soft); }
+.goals__reached-label { margin-top: clamp(28px, 3vw, 44px); }
+.goals__reached { margin: 12px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+.goals__reached-item { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.goals__reached-item .medal { width: 34px; }
+.goals__reached-title { flex: 1; min-width: 0; font: 800 clamp(18px, 1.8vw, 24px)/1.1 var(--f-text); font-stretch: 70%; }
+.goals__reached-meta { font: 700 12px/1 var(--f-text); letter-spacing: .16em; text-transform: uppercase; color: var(--gray-2); white-space: nowrap; }
