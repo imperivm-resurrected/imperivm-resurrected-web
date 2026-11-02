@@ -196,6 +196,7 @@ a { color: inherit; }
 .steps { margin: 0 0 1.1em; padding-left: 1.3em; }
 .steps li { margin-bottom: .35em; padding-left: .2em; }
 .steps li::marker { color: var(--accent-text); font-weight: 800; }
+.steps .install__download { margin: .45em 0 .3em; color: #fff; text-decoration: none; }
 .requirement { padding: 10px 14px; background: var(--code); border-left: 3px solid var(--accent-text); }
 
 .closing { position: relative; overflow: hidden; background: var(--accent); min-height: clamp(250px, 21.1vw, 400px); display: flex; align-items: center; }
