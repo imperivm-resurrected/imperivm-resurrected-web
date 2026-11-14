@@ -6,6 +6,16 @@
   "outputDirectory": "src",
   "redirects": [
     {
+      "source": "/vincular",
+      "destination": "/link.html",
+      "permanent": false
+    },
+    {
+      "source": "/:lang(en|it)/vincular",
+      "destination": "/:lang/link.html",
+      "permanent": false
+    },
+    {
       "source": "/sdk/en/:path*",
       "destination": "/sdk/:path*",
       "permanent": true

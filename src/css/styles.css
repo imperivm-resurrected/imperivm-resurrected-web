@@ -908,3 +908,38 @@ button.button { border: 0; cursor: pointer; }
   .three--four > div, .three--four > div:first-child { padding: 18px 0 0; border-left: 0; border-top: 1px solid #8a8a8a; }
 }
 .discord-mock__avatar svg { width: 60%; height: 60%; fill: #fff; }
+
+/* Linking the game to a Steam account (link.html). */
+.link-steps { margin: clamp(22px, 2.8vw, 44px) 0 0; padding: 0; list-style: none; max-width: 34em; border-top: 1px solid var(--line); }
+.link-steps li { display: grid; grid-template-columns: clamp(38px, 3.6vw, 54px) minmax(0, 1fr); column-gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.link-steps__n { grid-row: span 2; font: 800 clamp(26px, 2.8vw, 40px)/1 var(--f-text); font-stretch: 62%; letter-spacing: -.02em; color: var(--accent-text); }
+.link-steps h2 { margin: 0 0 2px; font: 700 clamp(17px, 1.6vw, 22px)/1.15 var(--f-text); font-stretch: 80%; }
+.link-steps p { margin: 0; font-size: clamp(14px, 1.15vw, 16px); line-height: 1.45; color: var(--gray); }
+.link-card { display: grid; justify-items: start; gap: 16px; padding: clamp(22px, 2.6vw, 40px); border-top: 3px solid var(--accent); background: var(--box); }
+.link-card__text { margin: 0; max-width: 40ch; font-size: clamp(15px, 1.3vw, 18px); line-height: 1.45; color: var(--ink-soft); }
+.link-card__label { display: block; margin-bottom: 4px; font: 800 11px/1 var(--f-text); letter-spacing: .2em; text-transform: uppercase; color: var(--gray); }
+.link-card__account { display: flex; align-items: center; gap: 12px; }
+.link-card__avatar { width: 40px; height: 40px; flex: none; object-fit: cover; }
+.link-card__name { font: 700 clamp(17px, 1.6vw, 22px)/1.15 var(--f-text); font-stretch: 85%; overflow-wrap: anywhere; }
+.link-card__status { min-height: 1.4em; margin: 0; font-size: 15px; font-weight: 600; color: var(--ink-soft); }
+.link-card__status:empty { display: none; }
+.link-card__status--error { color: var(--accent-text); }
+.link-card__hint { margin: 0 0 12px; font-size: 14px; color: var(--gray); max-width: 46ch; }
+.link-card__steam svg { width: 1.15em; height: 1.15em; flex: none; fill: currentColor; }
+.link-card .button { border: 0; cursor: pointer; }
+.link-card .button:disabled { opacity: .6; cursor: progress; transform: none; }
+.link-card__retry { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+.link-card__switch { padding: 0; border: 0; background: none; color: var(--accent-text); font: 500 14px/1.4 var(--f-text); text-align: left; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.link-form { display: grid; justify-items: start; gap: 12px; width: 100%; padding-top: 16px; border-top: 1px solid var(--hairline); }
+.link-form .link-card__label { margin: 0; }
+.link-code { width: 100%; max-width: 12.5ch; padding: 10px 12px; border: 1px solid var(--line); border-radius: 0; background: var(--paper); color: var(--ink); font: 700 clamp(28px, 3.2vw, 44px)/1.1 ui-monospace, Consolas, "Courier New", monospace; letter-spacing: .06em; text-transform: uppercase; }
+.link-code::placeholder { color: var(--mid); }
+.link-code:focus { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+.link-card__extra:empty { display: none; }
+.link-card:has(.link-card__extra:not(:empty)) .link-card__switch { display: none; }
+.link-card--done { border-top-color: #3c9a4a; }
+.link-card__check { width: 46px; height: 46px; border-radius: 50%; background: #3c9a4a; position: relative; }
+.link-card__check::after { content: ""; position: absolute; left: 16px; top: 10px; width: 11px; height: 20px; border: solid #fff; border-width: 0 4px 4px 0; transform: rotate(45deg); }
+.link-card__done { margin: 0; font: 800 clamp(34px, 4.2vw, 64px)/.95 var(--f-text); font-stretch: 68%; letter-spacing: -.03em; }
+.link .hash-note { margin-top: 16px; }
+@media (max-width: 480px) { .link-code { max-width: none; } .link-card .button { width: 100%; } }
